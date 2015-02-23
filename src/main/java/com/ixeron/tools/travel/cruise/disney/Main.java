@@ -42,6 +42,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class Main {
 
+	public enum OS {WINDOWS, LINUX, MAC, SOLARIS, UNKNOWN}
 	private List<String> cookies;
 	private HttpsURLConnection conn;
 
@@ -126,7 +127,9 @@ public class Main {
 		// 3. success then go to download file.
 		String timestamp = getTimestampString();
 		String filename = String.format("DCL_SpecialTARates_%s.pdf", timestamp);
-		String outputFilePath = String.format("/home/annon/Desktop/%s",
+		String userHomePath = System.getProperty("user.home");
+		
+		String outputFilePath = String.format("%s/%s", userHomePath,
 				filename);
 		http.downloadFile(pdfUrl, outputFilePath);
 
@@ -419,5 +422,20 @@ public class Main {
 	public void setCookies(List<String> cookies) {
 		this.cookies = cookies;
 	}
+	private static String OPERATING_SYSTEM = System.getProperty("os.name").toLowerCase();
 
+	public static OS getOS() {
+		System.out.println(OPERATING_SYSTEM);
+		if (OPERATING_SYSTEM.indexOf("win") >= 0) {
+			return OS.WINDOWS;
+		} else if (OPERATING_SYSTEM.indexOf("mac") >= 0) {
+			return OS.MAC;
+		} else if (OPERATING_SYSTEM.indexOf("nix") >= 0 || OPERATING_SYSTEM.indexOf("nux") >= 0 || OPERATING_SYSTEM.indexOf("aix") > 0 ) {
+			return OS.LINUX;
+		} else if (OPERATING_SYSTEM.indexOf("sunos") >= 0) {
+			return OS.SOLARIS;
+		} else {
+			return OS.UNKNOWN;
+		}
+	}
 }
